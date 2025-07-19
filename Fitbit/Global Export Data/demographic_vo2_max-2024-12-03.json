@@ -1,0 +1,33 @@
+[{
+  "dateTime" : "07/04/25 00:00:00",
+  "value" : {
+    "demographicVO2Max" : 43.255950000000006,
+    "demographicVO2MaxError" : 3.0000000000000004,
+    "filteredDemographicVO2Max" : 43.48021000000001,
+    "filteredDemographicVO2MaxError" : 2.7696
+  }
+},{
+  "dateTime" : "07/05/25 00:00:00",
+  "value" : {
+    "demographicVO2Max" : 37.62543,
+    "demographicVO2MaxError" : 3.0000000000000004,
+    "filteredDemographicVO2Max" : 40.64356,
+    "filteredDemographicVO2MaxError" : 1.4535
+  }
+},{
+  "dateTime" : "07/06/25 00:00:00",
+  "value" : {
+    "demographicVO2Max" : 38.015690000000006,
+    "demographicVO2MaxError" : 3.0000000000000004,
+    "filteredDemographicVO2Max" : 39.76624,
+    "filteredDemographicVO2MaxError" : 1.0015500000000002
+  }
+},{
+  "dateTime" : "07/07/25 00:00:00",
+  "value" : {
+    "demographicVO2Max" : 37.514920000000004,
+    "demographicVO2MaxError" : 3.0000000000000004,
+    "filteredDemographicVO2Max" : 39.18193,
+    "filteredDemographicVO2MaxError" : 0.77863
+  }
+}]

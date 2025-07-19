@@ -1,0 +1,109 @@
+[{
+  "logId" : 36799206536,
+  "loggedFood" : {
+    "foodId" : 0,
+    "name" : "Snacks Summary",
+    "brand" : "MyFitnessPal",
+    "accessLevel" : "PRIVATE",
+    "units" : [201],
+    "calories" : 285,
+    "amount" : 1.0,
+    "unit" : {
+      "id" : 201,
+      "name" : "meal",
+      "plural" : "meals"
+    },
+    "mealTypeId" : 7
+  },
+  "nutritionalValues" : {
+    "calories" : 285,
+    "fat" : 17.0,
+    "fiber" : 1.0,
+    "carbs" : 24.0,
+    "sodium" : 140.0,
+    "protein" : 6.0
+  },
+  "logDate" : "2025-07-06",
+  "favorite" : false
+},{
+  "logId" : 36799611845,
+  "loggedFood" : {
+    "foodId" : 0,
+    "name" : "Dinner Summary",
+    "brand" : "MyFitnessPal",
+    "accessLevel" : "PRIVATE",
+    "units" : [201],
+    "calories" : 812,
+    "amount" : 1.0,
+    "unit" : {
+      "id" : 201,
+      "name" : "meal",
+      "plural" : "meals"
+    },
+    "mealTypeId" : 5
+  },
+  "nutritionalValues" : {
+    "calories" : 812,
+    "fat" : 33.0,
+    "fiber" : 11.0,
+    "carbs" : 111.0,
+    "sodium" : 840.0,
+    "protein" : 26.0
+  },
+  "logDate" : "2025-07-06",
+  "favorite" : false
+},{
+  "logId" : 36797471098,
+  "loggedFood" : {
+    "foodId" : 0,
+    "name" : "Lunch Summary",
+    "brand" : "MyFitnessPal",
+    "accessLevel" : "PRIVATE",
+    "units" : [201],
+    "calories" : 951,
+    "amount" : 1.0,
+    "unit" : {
+      "id" : 201,
+      "name" : "meal",
+      "plural" : "meals"
+    },
+    "mealTypeId" : 3
+  },
+  "nutritionalValues" : {
+    "calories" : 951,
+    "fat" : 38.0,
+    "fiber" : 22.0,
+    "carbs" : 132.0,
+    "sodium" : 834.0,
+    "protein" : 24.0
+  },
+  "logDate" : "2025-07-06",
+  "favorite" : false
+},{
+  "logId" : 36796703384,
+  "loggedFood" : {
+    "foodId" : 0,
+    "name" : "Breakfast Summary",
+    "brand" : "MyFitnessPal",
+    "accessLevel" : "PRIVATE",
+    "units" : [201],
+    "calories" : 70,
+    "amount" : 1.0,
+    "unit" : {
+      "id" : 201,
+      "name" : "meal",
+      "plural" : "meals"
+    },
+    "mealTypeId" : 1
+  },
+  "nutritionalValues" : {
+    "calories" : 70,
+    "fat" : 3.0,
+    "fiber" : 1.0,
+    "carbs" : 10.0,
+    "sodium" : 55.0,
+    "protein" : 1.0
+  },
+  "logDate" : "2025-07-06",
+  "favorite" : false
+}]

@@ -1,0 +1,5 @@
+timestamp,event_name,email,location,ip,outcome,reason
+Sat Jul 05 20:39:05 UTC 2025,Update profile data,sanjayganap@gmail.com,,172.22.32.234,SUCCESS,
+Sat Jul 05 20:38:15 UTC 2025,Update profile data,sanjayganap@gmail.com,,172.22.18.50,SUCCESS,
+Sat Jul 05 20:36:57 UTC 2025,Update profile data,sanjayganap@gmail.com,,172.22.34.9,SUCCESS,
+Fri Jul 04 06:38:33 UTC 2025,updateProfileMigratedUser,sanjayganap@gmail.com,,,SUCCESS,

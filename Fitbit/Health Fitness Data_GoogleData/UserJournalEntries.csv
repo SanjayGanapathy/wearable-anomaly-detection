@@ -1,0 +1,2 @@
+entry_id,log_time,log_type,value,source,platform,reference_namespace,reference_id,metadata
+c0845610-59e0-11f0-9a3a-532a949c5f09,2025-07-05 20:43:32+0000,MOOD,false,DeviceEdaSessionQuick,,MINDFULNESS,44bbcc70-59e0-11f0-8080-808080808080,"log_source=0,first_source=3,first_value=5,zone_offset=-07:00"

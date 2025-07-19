@@ -1,0 +1,16 @@
+user_id,tracker_id,mobile_app_name,is_app_enabled,show_partial_message,is_default_message_app,created_on,modified_on
+169407145,2171181240,com.google.Gmail,false,false,false,2022-12-05T23:12:36.000Z,2022-12-05T23:12:36.000Z
+169407145,2171181240,com.yahoo.finance,false,false,false,2022-12-05T22:08:14.000Z,2022-12-05T22:08:14.000Z
+169407145,2171181240,com.apple.Maps,false,false,false,2022-12-05T22:08:14.000Z,2022-12-05T22:08:14.000Z
+169407145,2171181240,com.ring,false,false,false,2022-12-05T22:08:14.000Z,2022-12-05T22:08:14.000Z
+169407145,2171181240,com.tinginteractive.usms,false,false,false,2022-12-05T22:56:32.000Z,2022-12-05T22:56:32.000Z
+169407145,2171181240,com.apple.Preferences,false,false,false,2022-12-05T23:12:36.000Z,2022-12-05T23:12:36.000Z
+169407145,2886333120,com.fitbit.FitbitMobile,false,false,false,2025-07-04T06:47:02.000Z,2025-07-04T06:47:02.000Z
+169407145,2886333120,net.whatsapp.WhatsApp,false,false,false,2025-07-04T09:33:38.000Z,2025-07-04T09:33:38.000Z
+169407145,2886333120,com.apple.facetime,false,false,false,2025-07-05T01:31:28.000Z,2025-07-05T01:31:28.000Z
+169407145,2886333120,com.apple.mobileslideshow,false,false,false,2025-07-05T19:29:07.000Z,2025-07-05T19:29:07.000Z
+169407145,2886333120,com.myfitnesspal.mfp,false,false,false,2025-07-06T21:29:26.000Z,2025-07-06T21:29:26.000Z
+169407145,2886333120,com.google.Drive,false,false,false,2025-07-05T00:00:46.000Z,2025-07-05T00:00:46.000Z
+169407145,2886333120,com.apple.ScreenTimeNotifications,false,false,false,2025-07-04T20:02:04.000Z,2025-07-04T20:02:04.000Z
+169407145,2886333120,com.locket.Locket,false,false,false,2025-07-06T02:21:51.000Z,2025-07-06T02:21:51.000Z
+169407145,2886333120,com.pedagogy.califor,false,false,false,2025-07-07T05:13:59.000Z,2025-07-07T05:13:59.000Z
