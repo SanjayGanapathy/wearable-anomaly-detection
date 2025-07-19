@@ -9,7 +9,7 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 
 # --- CONFIGURATION ---
 TARGET_DATE = "2025-07-07"
-GOOGLE_API_KEY = "AIzaSyAXeR1JhC9UUGf0D14iRiYNcYtQbTBWsVU"
+GOOGLE_API_KEY = "REPLACE_WITH_YOUR_GOOGLE_API_KEY"
 
 # --- FILE PATHS ---
 base_path = "Fitbit/Physical Activity_GoogleData/"
