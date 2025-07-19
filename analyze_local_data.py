@@ -7,17 +7,17 @@ import google.generativeai as genai
 # Suppress pandas FutureWarnings
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
-# --- CONFIGURATION ---
+# Set the target date and Google API key
 TARGET_DATE = "2025-07-07"
 GOOGLE_API_KEY = "REPLACE_WITH_YOUR_GOOGLE_API_KEY"
 
-# --- FILE PATHS ---
+# Please adjust the base path to your actual data directory
 base_path = "Fitbit/Physical Activity_GoogleData/"
 heart_rate_file = os.path.join(base_path, f"heart_rate_{TARGET_DATE}.csv")
 steps_file = os.path.join(base_path, "steps-2025-05-01.csv")
 
 try:
-    # --- 1. DATA LOADING & PROCESSING ---
+    # Loading and processing data
     print(f"Loading and processing data for {TARGET_DATE}...")
     # (The data loading code is the same as before)
     hr_df = pd.read_csv(heart_rate_file)
@@ -44,13 +44,13 @@ try:
     df["heart_rate"] = df["heart_rate"].astype(int)
     df["steps"] = df["steps"].astype(int)
 
-    # --- 2. FEATURE ENGINEERING ---
+    # Feature engineering
     print("Creating features...")
     df["hour"] = df.index.hour
     df["hr_rolling_avg"] = df["heart_rate"].rolling(window=300, min_periods=1).mean()
     df.dropna(inplace=True)
 
-    # --- 3. MODEL TRAINING & PREDICTION ---
+    # Training the model and predicting anomalies
     print("Training model and predicting anomalies...")
     features = ["heart_rate", "steps", "hour", "hr_rolling_avg"]
     model = IsolationForest(contamination=0.01, random_state=42)
@@ -59,7 +59,7 @@ try:
 
     anomalies = df[df["anomaly"] == -1].copy()
 
-    # --- 4. FIND MOST SIGNIFICANT ANOMALIES ---
+    # Ranking anomalies by heart rate deviation
     # Calculate how much the heart rate deviated from the rolling average
     anomalies["hr_deviation"] = (
         anomalies["heart_rate"] - anomalies["hr_rolling_avg"]
@@ -71,7 +71,7 @@ try:
         f"\nFound {len(anomalies)} anomalies. Explaining the top 5 most significant..."
     )
 
-    # --- 5. EXPLAIN ANOMALIES WITH LLM ---
+    # Explaining the anomalies using Gemini LLM
     if not top_5_anomalies.empty and GOOGLE_API_KEY != "YOUR_GOOGLE_API_KEY":
         genai.configure(api_key=GOOGLE_API_KEY)
         llm = genai.GenerativeModel("gemini-2.5-flash")
@@ -91,7 +91,7 @@ try:
 
             **Analysis Required:**
             1.  **Summary:** Provide a one-sentence summary of the event.
-            2.  **Reason for Flag:** Explain technically why this was flagged, focusing on the relationship between the measured heart rate, the rolling average, and physical activity (steps).
+            2.  **Reason for Flag:** Explain technically why this was flagged, focusing on the relationship between the measured heart rate, the rolling average, and physical activity (steps). Consider time and suddeness of the heart rate change as well and factor that into your analysis.
             3.  **Potential Correlations (Not Medical Advice):** Based on the data, what are some possible real-world events that could correlate with this type of anomaly? (e.g., sudden physical exertion, moments of stress or excitement, poor sleep, etc.).
             4.  **Key Observation for Researcher:** What is the most important or interesting takeaway from this specific data point for the researcher?
             """
