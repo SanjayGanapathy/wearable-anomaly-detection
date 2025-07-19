@@ -59,3 +59,43 @@ pip install pandas scikit-learn google-generativeai
     ```
 
 The script will load the data, train the model, and print the top 5 most significant anomalies along with their detailed explanations to the console.
+
+## Roadmap to Production
+
+This section outlines the necessary steps to evolve this script from a proof-of-concept into a reliable, scalable, and scientifically rigorous tool ready for dashboard integration and academic publication.
+
+### 1. Dashboard Integration and Scalability
+
+To plug this system into a dashboard like Wearipedia, the code needs to be more modular and accessible.
+
+-   **Modularize the Code**: Refactor the single script into separate Python modules. Create distinct files for:
+    -   `data_loader.py`: A module dedicated to finding and loading the specific Fitbit data files.
+    -   `feature_engineering.py`: A module to handle the creation of time-based and rolling-average features.
+    -   `anomaly_model.py`: A module that contains the `IsolationForest` model, including functions for training and prediction.
+    -   `llm_explainer.py`: A module for interacting with the Google Gemini API to generate explanations.
+-   **Create an API Endpoint**: Build a simple API using **Flask** or **FastAPI**. This API would accept a date as input, run the entire analysis pipeline using the modules above, and return the detected anomalies and their explanations in a structured JSON format that a dashboard can easily consume.
+-   **Configuration Management**: Move all hardcoded variables (like `contamination`, `window` size, file paths, and feature lists) into a separate configuration file (e.g., `config.yaml`). This allows for easy adjustments without changing the core code.
+
+---
+### 2. Adjustments for Scientific Research
+
+To ensure the results are valid and publishable, the methodology needs to be rigorous and reproducible.
+
+-   **Hyperparameter Tuning**: Systematically test different values for the `IsolationForest` model's `contamination` parameter (e.g., from 0.001 to 0.05) to find the optimal sensitivity for your specific research question.
+-   **Cross-Validation**: Implement a time-series cross-validation strategy to ensure the model's performance is consistent across different periods and not just on one particular day's data.
+-   **Statistical Significance**: For each detected anomaly, calculate a significance score. This could be based on the Z-score of the heart rate's deviation from the rolling average, providing a quantitative measure of how unusual each event is.
+-   **Expand Feature Set**: Incorporate more data from your export, such as sleep stages (`UserSleepStages.csv`) or heart rate variability (`DailyHeartRateVariabilitySummary.csv`), to create a richer feature set. This could help explain *why* an anomaly occurred (e.g., high heart rate spikes correlating with poor sleep the night before).
+-   **Literature Review & Comparison**: Research existing academic papers on wearable heart rate anomaly detection to validate that our methods and findings are consistent with or improve upon established approaches.
+- **Variable/Feature Analysis**: Consider what features or variables are the most important to be considered for the anomaly detection algorithm. Test these systematically.  
+
+---
+### 3. Rigorous Testing Plan
+
+A robust testing suite is essential for reliability and to ensure you can trust the output.
+
+-   **Unit Tests**: Write individual tests for your core functions. For example:
+    -   A test to confirm that the data loading function correctly parses a sample CSV.
+    -   A test to ensure the rolling average calculation is correct.
+-   **Data Validation**: Add checks to your data loading pipeline to automatically flag issues with the input files, such as missing columns or incorrect data types.
+-   **Integration Tests**: Create a test that runs the entire pipeline on a sample dataset with known, pre-defined anomalies to ensure the system correctly identifies them.
+-   **Benchmarking**: Compare the `IsolationForest` model's results against at least two other unsupervised anomaly detection algorithms (e.g., **DBSCAN** or **Local Outlier Factor** or **OCSVM**) to benchmark its performance and justify its selection in your research paper.
