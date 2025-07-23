@@ -5,7 +5,7 @@ START_DATE = "2025-07-01"
 END_DATE = "2025-07-07"
 
 # IMPORTANT: Replace with your actual Google API Key
-GOOGLE_API_KEY = "AIzaSyDOgwNMte4g_BEWKdtD3n6WfJFIPvCQdrw"
+GOOGLE_API_KEY = "REPLACE_WITH_YOUR_GOOGLE_API_KEY"
 
 # Please adjust these paths to your actual data directories
 BASE_PATH = "Fitbit/Physical Activity_GoogleData/"
