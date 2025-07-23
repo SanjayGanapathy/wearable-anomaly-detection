@@ -42,7 +42,7 @@ class TestAnomalyModel(unittest.TestCase):
             df=self.df,
             features=["heart_rate", "steps", "hour", "hr_rolling_avg"],
             contamination=0.01,  # Expects 1% of data to be anomalies (1 out of 100)
-            random_state=42,
+            random_state=55,
             target="heart_rate",
         )
 

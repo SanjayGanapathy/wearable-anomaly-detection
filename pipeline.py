@@ -49,3 +49,4 @@ def run_pipeline(start_date: str, end_date: str, target_feature: str) -> dict:
         error_message = f"An unexpected error occurred: {e}"
         print(f"\n[ERROR] {error_message}")
         return {"status": "error", "message": error_message}
+

@@ -5,7 +5,7 @@ START_DATE = "2025-07-01"
 END_DATE = "2025-07-07"
 
 # IMPORTANT: Replace with your actual Google API Key
-GOOGLE_API_KEY = "REPLACE_WITH_YOUR_GOOGLE_API_KEY"
+GOOGLE_API_KEY = "AIzaSyDOgwNMte4g_BEWKdtD3n6WfJFIPvCQdrw"
 
 # Please adjust these paths to your actual data directories
 BASE_PATH = "Fitbit/Physical Activity_GoogleData/"
@@ -23,7 +23,7 @@ DEFAULT_TARGET_FEATURE = "heart_rate"
 # -- MODEL PARAMETERS --
 # This value should be set based on the tuner script's output
 ISOLATION_FOREST_CONTAMINATION = 0.01
-RANDOM_STATE = 42
+RANDOM_STATE = 55
 
 # -- FEATURE ENGINEERING PARAMETERS --
 ROLLING_WINDOW_SIZE = 300
