@@ -6,23 +6,31 @@ import sys
 from datetime import timedelta
 
 
+def load_questionnaire_data(questionnaire_path: str) -> dict:
+    """Loads participant questionnaire data."""
+    try:
+        q_df = pd.read_csv(questionnaire_path)
+        participant_data = q_df.iloc[0].to_dict()
+        print(f"Loaded questionnaire data: {participant_data}")
+        return participant_data
+    except FileNotFoundError:
+        print(f"Questionnaire file not found at {questionnaire_path}. Skipping.")
+        return None
+    except Exception as e:
+        print(f"Error loading questionnaire data: {e}")
+        return None
+
+
 def load_and_summarize_sleep(sleep_file_path: str, target_date: pd.Timestamp) -> dict:
-    """
-    Loads sleep data for the night prior to the target date and summarizes it.
-    """
+    """Loads and summarizes sleep data for the night prior to the target date."""
     try:
         sleep_df = pd.read_csv(sleep_file_path)
-        # --- FIX 1 ---
-        # Convert both startTime and endTime to proper datetime objects immediately
         sleep_df["startTime"] = pd.to_datetime(sleep_df["startTime"])
         sleep_df["endTime"] = pd.to_datetime(sleep_df["endTime"])
-
-        # Filter for sleep sessions that end on the morning of our target_date
         night_sleep = sleep_df[sleep_df["endTime"].dt.date == target_date.date()]
-        # --- END FIX 1 ---
 
         if night_sleep.empty:
-            return None  # Return None if no sleep data is found
+            return None
 
         summary = {
             "sleep_deep_minutes": night_sleep[night_sleep["stage"] == "deep"][
@@ -50,12 +58,10 @@ def load_daily_hrv(hrv_file_path: str) -> pd.DataFrame:
         hrv_df = pd.read_csv(hrv_file_path)
         hrv_df["timestamp"] = pd.to_datetime(hrv_df["timestamp"])
         hrv_df["date"] = hrv_df["timestamp"].dt.date
-        hrv_df = hrv_df[["date", "rmssd", "coverage"]].rename(
+        return hrv_df[["date", "rmssd", "coverage"]].rename(
             columns={"rmssd": "hrv_rmssd", "coverage": "hrv_coverage"}
         )
-        return hrv_df
     except FileNotFoundError:
-        print(f"HRV file not found at {hrv_file_path}. Skipping HRV features.")
         return None
 
 
@@ -63,17 +69,19 @@ def load_data_range(
     base_path: str,
     sleep_path: str,
     hrv_path: str,
+    questionnaire_path: str,
     start_date_str: str,
     end_date_str: str,
 ) -> pd.DataFrame:
     """
-    Loads, merges, and cleans heart rate, steps, sleep, and HRV data for a date range.
+    Loads, merges, and cleans all data sources for a given date range.
     """
     print(f"Loading data from {start_date_str} to {end_date_str}...")
 
     all_dfs = []
     date_range = pd.to_datetime(pd.date_range(start=start_date_str, end=end_date_str))
 
+    questionnaire_data = load_questionnaire_data(questionnaire_path)
     daily_hrv_data = load_daily_hrv(hrv_path)
     all_sleep_summaries = {}
     for date in date_range:
@@ -86,7 +94,6 @@ def load_data_range(
 
         hr_file = os.path.join(base_path, f"heart_rate_{current_date_str}.csv")
         if not os.path.exists(hr_file):
-            # This is expected for the test, so we won't print a warning here.
             continue
 
         hr_df = pd.read_csv(hr_file)
@@ -97,7 +104,6 @@ def load_data_range(
         steps_month_str = date.strftime("%Y-%m-01")
         steps_file = os.path.join(base_path, f"steps_{steps_month_str}.csv")
         if not os.path.exists(steps_file):
-            # This is expected for the test, so we won't print a warning here.
             continue
 
         monthly_steps_df = pd.read_csv(steps_file)
@@ -111,11 +117,7 @@ def load_data_range(
         daily_df = hr_df.join(steps_df, how="outer")
         daily_df.dropna(subset=["heart_rate"], inplace=True)
 
-        # --- FIX 2 ---
-        # Modernize the fillna calls to remove warnings
-        daily_df["steps"] = daily_df["steps"].ffill()
-        daily_df["steps"] = daily_df["steps"].fillna(0)
-        # --- END FIX 2 ---
+        daily_df["steps"] = daily_df["steps"].ffill().fillna(0)
 
         sleep_data = all_sleep_summaries.get(date.date(), {})
         for key, value in sleep_data.items():
@@ -127,6 +129,10 @@ def load_data_range(
                 daily_df["hrv_rmssd"] = hrv_row["hrv_rmssd"].iloc[0]
                 daily_df["hrv_coverage"] = hrv_row["hrv_coverage"].iloc[0]
 
+        if questionnaire_data:
+            for key, value in questionnaire_data.items():
+                daily_df[key] = value
+
         all_dfs.append(daily_df)
 
     if not all_dfs:
@@ -134,19 +140,34 @@ def load_data_range(
 
     full_df = pd.concat(all_dfs).sort_index()
 
-    for col in [
-        "sleep_deep_minutes",
-        "sleep_light_minutes",
-        "sleep_rem_minutes",
-        "sleep_awakenings",
-        "hrv_rmssd",
-        "hrv_coverage",
-    ]:
+    expected_cols = {
+        "sleep_deep_minutes": 0,
+        "sleep_light_minutes": 0,
+        "sleep_rem_minutes": 0,
+        "sleep_awakenings": 0,
+        "hrv_rmssd": 0,
+        "hrv_coverage": 0,
+        "primary_non_step_activity": "N/A",
+        "caffeine_user": "N/A",
+        "reports_high_stress": "N/A",
+    }
+    for col, default in expected_cols.items():
         if col not in full_df.columns:
-            full_df[col] = 0
+            full_df[col] = default
         else:
-            # Use modern fillna to avoid warnings
-            full_df[col] = full_df[col].fillna(0)
+            full_df[col].fillna(default, inplace=True)
+
+    # --- ENCODING LOGIC ---
+    print("Encoding questionnaire data for the model...")
+    # One-Hot Encode categorical columns
+    categorical_cols = [
+        "primary_non_step_activity",
+        "caffeine_user",
+        "reports_high_stress",
+    ]
+    for col in categorical_cols:
+        if col in full_df.columns:
+            full_df = pd.get_dummies(full_df, columns=[col], prefix=col, dtype=float)
 
     full_df["heart_rate"] = full_df["heart_rate"].astype(int)
     full_df["steps"] = full_df["steps"].astype(int)

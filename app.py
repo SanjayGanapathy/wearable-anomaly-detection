@@ -20,7 +20,6 @@ def analyze_data_range():
     start_date = request.args.get("start_date")
     end_date = request.args.get("end_date")
 
-    # Get the target feature, using the default from config if not provided
     target_feature = request.args.get("target", config.DEFAULT_TARGET_FEATURE)
 
     if not all([start_date, end_date]):
@@ -37,10 +36,9 @@ def analyze_data_range():
     print(f"Received request to analyze data from: {start_date} to {end_date}")
     print(f"Target feature for ranking: {target_feature}")
 
-    # Pass the target feature to the pipeline
     analysis_result = run_pipeline(start_date, end_date, target_feature)
 
-    if analysis_result["status"] == "error":
+    if analysis_result.get("status") == "error":
         return jsonify(analysis_result), 500
 
     return jsonify(analysis_result)

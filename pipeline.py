@@ -13,7 +13,12 @@ def run_pipeline(start_date: str, end_date: str, target_feature: str) -> dict:
     """
     try:
         df = load_data_range(
-            config.BASE_PATH, config.SLEEP_PATH, config.HRV_PATH, start_date, end_date
+            config.BASE_PATH,
+            config.SLEEP_PATH,
+            config.HRV_PATH,
+            config.QUESTIONNAIRE_PATH,
+            start_date,
+            end_date,
         )
 
         df_featured = create_features(df, config.ROLLING_WINDOW_SIZE)

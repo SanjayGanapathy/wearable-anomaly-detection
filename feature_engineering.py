@@ -17,7 +17,7 @@ def create_features(df: pd.DataFrame, window_size: int) -> pd.DataFrame:
 
     df.dropna(subset=["hr_rolling_avg"], inplace=True)
 
-    # FIX: Modernized the fillna call to remove the warning
+    # Modernized the fillna call to remove warnings
     df["hr_rolling_std"] = df["hr_rolling_std"].fillna(0)
 
     print("Feature creation complete.")

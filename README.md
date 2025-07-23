@@ -1,30 +1,51 @@
 # Health Anomaly Detection with Wearable Data
 
-This project analyzes intraday time-series data from Fitbit wearables to detect, rank, and explain physiological anomalies. It uses an Isolation Forest machine learning model to identify unusual patterns and leverages Google's Gemini Large Language Model (LLM) to translate these findings into human-readable explanations suitable for non-technical researchers.
+This project provides a backend service for detecting, ranking, and explaining physiological anomalies from intraday Fitbit data. It uses an Isolation Forest machine learning model and Google's Gemini LLM to translate complex data into human-readable explanations suitable for clinical researchers.
 
-The system is designed to be a flexible, scalable, and scientifically rigorous backend for clinical research platforms like "Easy Ants".
+The system is designed as a flexible, scalable, and scientifically rigorous engine for research platforms like "Easy Ants", empowering researchers to monitor study participants effectively.
 
 ## Key Features
 
-- **Multi-Day Analysis**: Processes continuous data over date ranges (weeks or months) to capture long-term trends.
-- **Flexible Anomaly Targeting**: Researchers can specify which metric to target for anomaly detection (e.g., `heart_rate`, `steps`), tailoring the analysis to their study.
+- **Multi-Day Analysis**: Processes continuous data over specified date ranges to capture long-term trends.
+- **Flexible Anomaly Targeting**: Allows researchers to target specific metrics (e.g., `heart_rate`, `steps`) for anomaly ranking.
 - **Rich Contextual Data**: Integrates multiple data streams for a holistic analysis, including:
-    - Intraday Heart Rate
-    - Step Count
-    - Sleep Stages (Deep, Light, REM, Awakenings)
+    - Intraday Heart Rate & Step Count
+    - Sleep Stages (Deep, Light, REM)
     - Heart Rate Variability (HRV)
-- **Statistical Rigor**: Ranks anomalies using Z-scores to provide a quantitative measure of statistical significance.
-- **Automated Explanations**: Utilizes a Large Language Model (LLM) to generate clear, context-aware explanations for each detected anomaly.
-- **API-Driven**: Exposes a Flask API endpoint for easy integration with web dashboards and other applications.
-- **Tested & Benchmarked**: Includes a suite of unit tests for reliability and a benchmarking script to validate the choice of the `IsolationForest` model against alternatives.
+    - Participant-specific questionnaire data (e.g., exercise habits, caffeine use).
+- **Statistical Rigor**: Ranks anomalies using Z-scores for a quantitative measure of statistical significance.
+- **Automated Explanations**: Leverages a Large Language Model (LLM) to generate clear, context-aware explanations for each detected anomaly.
+- **API-Driven**: Exposes a Flask API for easy integration with web dashboards.
+- **Tested & Benchmarked**: Includes a unit testing suite for reliability and a benchmarking script to validate the choice of the `IsolationForest` model.
+
+---
+
+## Methodology
+
+Our pipeline is designed to be both powerful and interpretable.
+
+#### 1. Feature Engineering
+The model's performance relies on a rich feature set. We engineer several key features from the raw data:
+-   **`hr_rolling_avg` & `hr_rolling_std`**: A 5-minute rolling average and standard deviation of the heart rate. This provides immediate, localized context for each data point.
+-   **Sleep Metrics**: Data from the previous night's sleep (e.g., `sleep_deep_minutes`, `sleep_awakenings`) are included, as poor sleep can significantly impact next-day physiology.
+-   **Heart Rate Variability (HRV)**: The daily `hrv_rmssd` provides insight into the participant's autonomic nervous system state and stress levels.
+-   **Questionnaire Data**: Categorical data from participant questionnaires (e.g., exercise habits) is one-hot encoded to provide crucial lifestyle context.
+
+#### 2. Anomaly Detection Model
+We use the **Isolation Forest** algorithm. Our benchmarking showed it provides the best balance of speed and accuracy for this type of time-series data. It works by "isolating" observations by randomly selecting a feature and then randomly selecting a split value. The logic is that anomalous points are "easier" to isolate and will have shorter path lengths in the decision trees.
+
+#### 3. Anomaly Ranking
+Instead of just taking the model's raw output, we add a layer of statistical rigor. When targeting `heart_rate`, we rank the detected anomalies by their **Z-score**, which measures how many standard deviations a point is from its local rolling average. This provides a quantifiable and scientifically respected measure of how unusual each event is.
+
+---
 
 ## Project Structure
 
-The project is organized into a modular and maintainable structure:
+The project is organized into a modular structure for maintainability and scalability.
 
 -   `config.py`: Central configuration for file paths, API keys, and model parameters.
--   `data_loader.py`: Handles loading and merging of all raw data sources (heart rate, steps, sleep, HRV).
--   `feature_engineering.py`: Creates time-based and rolling-window features for the model.
+-   `data_loader.py`: Handles loading, merging, and encoding of all data sources.
+-   `feature_engineering.py`: Creates time-based and rolling-window features.
 -   `anomaly_model.py`: Contains the Isolation Forest model for detecting and ranking anomalies.
 -   `llm_explainer.py`: Interacts with the Google Gemini API to generate explanations.
 -   `pipeline.py`: Orchestrates the entire workflow from data loading to explanation.
@@ -33,61 +54,69 @@ The project is organized into a modular and maintainable structure:
 -   `benchmarker.py`: A utility script to compare different anomaly detection models.
 -   `tests/`: Contains all unit tests to ensure code reliability.
 
+---
+
 ## How to Use
 
 ### 1. Setup
-
-First, install the required Python packages:
-
+Install the required Python packages:
 ```bash
 pip install pandas scikit-learn google-generativeai Flask
 ```
 
 ### 2. Configuration
-
-Open `config.py` and set the following variables:
--   `GOOGLE_API_KEY`: Your API key for the Google Gemini service.
--   `BASE_PATH`, `SLEEP_PATH`, `HRV_PATH`: The correct paths to your data directories.
--   `START_DATE`, `END_DATE`: The default date range for analysis.
--   `ISOLATION_FOREST_CONTAMINATION`: Set this value based on the results of the `tuner.py` script.
+Open `config.py` and set the required variables, including your `GOOGLE_API_KEY` and the correct paths to your data files.
 
 ### 3. Running the API Server
-
 To start the anomaly detection service, run the following command from your terminal:
-
 ```bash
 python app.py
 ```
 The server will start and be accessible at `http://127.0.0.1:5000`.
 
-### 4. Making an API Request
+### 4. API Documentation
 
-You can request an analysis by sending a GET request to the `/analyze_range` endpoint.
+The service exposes one primary endpoint:
 
-**Parameters:**
--   `start_date` (required): The start of the date range (e.g., `2025-07-01`).
--   `end_date` (required): The end of the date range (e.g., `2025-07-07`).
+**`GET /analyze_range`**
+
+Triggers the full analysis pipeline for a specified date range.
+
+**Query Parameters:**
+-   `start_date` (required): The start of the date range in `YYYY-MM-DD` format.
+-   `end_date` (required): The end of the date range in `YYYY-MM-DD` format.
 -   `target` (optional): The feature to rank anomalies by. Defaults to `heart_rate`. Can also be `steps`.
 
 **Example Request (using curl):**
 ```bash
 # Analyze heart rate anomalies for the first week of July
 curl "[http://127.0.0.1:5000/analyze_range?start_date=2025-07-01&end_date=2025-07-07&target=heart_rate](http://127.0.0.1:5000/analyze_range?start_date=2025-07-01&end_date=2025-07-07&target=heart_rate)"
+```
 
-# Analyze step anomalies for the same period
-curl "[http://127.0.0.1:5000/analyze_range?start_date=2025-07-01&end_date=2025-07-07&target=steps](http://127.0.0.1:5000/analyze_range?start_date=2025-07-01&end_date=2025-07-07&target=steps)"
+**Example Success Response (200 OK):**
+```json
+{
+  "date_range_analyzed": "2025-07-01 to 2025-07-07",
+  "results": [
+    {
+      "anomaly_data": {
+        "anomaly": -1.0,
+        "heart_rate": 150.0,
+        "z_score": 4.5,
+        "...": "..."
+      },
+      "explanation": "1. Summary: ...\n2. Reason for Flag: ...\n..."
+    }
+  ],
+  "status": "success"
+}
 ```
 
 ### 5. Running Tests
-
 To verify that all components are working correctly, run the unit test suite:
-
 ```bash
 python -m unittest discover
 ```
 
-## Future Work
-
--   **Dashboard Integration**: Build a front-end interface to consume the API.
--   **Production Deployment**: Deploy the Flask API using a production-grade server like Gunicorn.
--   **Expand Feature Set**: Integrate additional data sources like respiratory rate and skin temperature.
+## How to Contribute
+Contributions are welcome. Please feel free to submit a pull request or open an issue for any bugs or feature requests.

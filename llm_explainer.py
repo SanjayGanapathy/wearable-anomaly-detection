@@ -38,7 +38,12 @@ def get_anomaly_explanations(
         prompt = f"""
         You are a health data analyst. Your task is to explain a data anomaly from Fitbit data.
         The anomaly was selected because it was one of the most unusual data points for the **'{target_feature}'** metric.
-        Analyze all the provided context to explain why this might have happened. Do not provide medical advice.
+        Analyze ALL the provided context, especially the participant's questionnaire data, to explain why this might have happened. Do not provide medical advice.
+
+        **Participant's Self-Reported Info (from Questionnaire):**
+        - Primary Non-Step Activity: {row.get('primary_non_step_activity', 'N/A')}
+        - Is a Regular Caffeine User: {row.get('caffeine_user', 'N/A')}
+        - Reports High Stress Levels: {row.get('reports_high_stress', 'N/A')}
 
         **Daily Physiological Context:**
         - Previous Night's Deep Sleep: {row.get('sleep_deep_minutes', 'N/A'):.0f} minutes
@@ -54,10 +59,10 @@ def get_anomaly_explanations(
         - Statistical Significance (Z-score for HR): {row.get('z_score', 'N/A'):.2f}
 
         **Analysis Required:**
-        1.  **Summary:** Provide a one-sentence summary of the event, mentioning the target feature ('{target_feature}').
-        2.  **Reason for Flag:** Explain why this was flagged, focusing on the '{target_feature}' value in the context of the other data.
-        3.  **Potential Correlations:** Based on ALL provided data, what are possible real-world correlations?
-        4.  **Key Observation for Researcher:** What is the most important takeaway, especially concerning the '{target_feature}'?
+        1.  **Summary:** Provide a one-sentence summary of the event.
+        2.  **Reason for Flag:** Explain why this was flagged, focusing on the '{target_feature}' value.
+        3.  **Potential Correlations:** Based on ALL provided data (including questionnaire info), what are the most likely real-world correlations?
+        4.  **Key Observation for Researcher:** What is the most important takeaway? Directly reference the questionnaire data to provide a powerful, context-specific insight.
         """
 
         try:
