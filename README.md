@@ -1,8 +1,8 @@
 # Health Anomaly Detection with Wearable Data
 
-This project provides a backend service for detecting, ranking, and explaining physiological anomalies from intraday Fitbit data. It uses an Isolation Forest machine learning model and Google's Gemini Large Language Model (LLM) to translate complex data into human-readable explanations suitable for clinical researchers.
+This project provides a backend service for detecting, ranking, and explaining physiological anomalies from intraday Fitbit data. It uses an Isolation Forest machine learning model and Google's Gemini Large Language Model (LLM) to translate complex data into human-readable explanations suitable for clinical researchers. There are plans to incorporate this framework with the Easy Ants dashboard, a clinical research dashboard for collecting and managing werable data for clincal research studies. This outlier detection component is to aid clinical researchers in the process of following up with participants, identifying potential inconsistencies in the data that need to be addressed, to make it easier for researchers to find the important findings in their research, and to provide help during the analysis component of the research process. 
 
-The system is designed as a flexible, scalable, and scientifically rigorous engine for research platforms like "Easy Ants", empowering researchers to monitor study participants effectively.
+The system is designed as a flexible, scalable, and scientifically rigorous engine for Easy Ants, empowering researchers to monitor study participants effectively.
 
 ## Key Features
 
